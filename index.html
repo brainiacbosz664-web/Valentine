@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>💘 Valentine?</title>
+  <style>
+    :root { --bg1:#ff9a9e; --bg2:#fad0c4; --card:#ffffffcc; --text:#1f1f1f; }
+    body{
+      margin:0; min-height:100vh; display:flex; align-items:center; justify-content:center;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background: linear-gradient(135deg, var(--bg1), var(--bg2));
+      color:var(--text);
+      overflow:hidden;
+    }
+    .card{
+      width:min(520px, 92vw);
+      background:var(--card);
+      backdrop-filter: blur(10px);
+      border:1px solid #ffffff70;
+      border-radius:24px;
+      padding:28px 22px;
+      text-align:center;
+      box-shadow: 0 20px 60px rgba(0,0,0,.18);
+      position:relative;
+    }
+    h1{ margin:0 0 10px; font-size:28px; }
+    p{ margin:0 0 20px; opacity:.85; }
+    .name{ font-weight:700; }
+    .btns{ display:flex; gap:12px; justify-content:center; flex-wrap:wrap; }
+    button{
+      border:0; padding:12px 18px; border-radius:14px; cursor:pointer;
+      font-size:16px; font-weight:700;
+      transition: transform .08s ease;
+    }
+    button:active{ transform: scale(.98); }
+    #yes{ background:#ff2d55; color:#fff; }
+    #no{ background:#111; color:#fff; position:relative; }
+    .footer{ margin-top:18px; font-size:12px; opacity:.7; }
+    .hearts{
+      position:absolute; inset:-40px; pointer-events:none; opacity:.35;
+      background-image:
+        radial-gradient(circle at 20% 30%, #ff2d55 0 6px, transparent 7px),
+        radial-gradient(circle at 70% 40%, #ff2d55 0 5px, transparent 6px),
+        radial-gradient(circle at 40% 70%, #ff2d55 0 4px, transparent 5px),
+        radial-gradient(circle at 85% 75%, #ff2d55 0 6px, transparent 7px);
+      filter: blur(.2px);
+    }
+    .big{
+      font-size:42px; margin:8px 0 14px;
+    }
+    .hide{ display:none; }
+  </style>
+</head>
+<body>
+  <div class="card" id="card">
+    <div class="hearts"></div>
+
+    <div id="screenAsk">
+      <div class="big">💘</div>
+      <h1>Hey <span class="name" id="herName">my love</span>…</h1>
+      <p>Will you be my Valentine? 🥺🌹</p>
+
+      <div class="btns">
+        <button id="yes">Yes 💖</button>
+        <button id="no">No 🙈</button>
+      </div>
+
+      <div class="footer">Tip: try pressing “No” 😄</div>
+    </div>
+
+    <div id="screenYes" class="hide">
+      <div class="big">🥰💞</div>
+      <h1>Yesss!!</h1>
+      <p>You just made my whole day 😭❤️</p>
+      <p id="dateLine"></p>
+    </div>
+  </div>
+
+  <script>
+    // Optional: set her name using ?name=Maria in the link
+    const params = new URLSearchParams(location.search);
+    const n = params.get("name");
+    if (n) document.getElementById("herName").textContent = n;
+
+    // Optional: show a custom date line using ?date=Feb%2014
+    const d = params.get("date");
+    document.getElementById("dateLine").textContent = d ? `See you on ${d} 😘` : `See you soon 😘`;
+
+    const yesBtn = document.getElementById("yes");
+    const noBtn  = document.getElementById("no");
+    const ask    = document.getElementById("screenAsk");
+    const yes    = document.getElementById("screenYes");
+
+    yesBtn.addEventListener("click", () => {
+      ask.classList.add("hide");
+      yes.classList.remove("hide");
+      confettiHearts();
+    });
+
+    // Make "No" run away 😄
+    function moveNo(){
+      const pad = 16;
+      const btnRect = noBtn.getBoundingClientRect();
+      const maxX = window.innerWidth - btnRect.width - pad;
+      const maxY = window.innerHeight - btnRect.height - pad;
+
+      const x = Math.random() * (maxX - pad) + pad;
+      const y = Math.random() * (maxY - pad) + pad;
+
+      noBtn.style.position = "fixed";
+      noBtn.style.left = x + "px";
+      noBtn.style.top  = y + "px";
+    }
+    noBtn.addEventListener("mouseenter", moveNo);
+    noBtn.addEventListener("click", moveNo);
+
+    // Tiny heart confetti (no libraries)
+    function confettiHearts(){
+      for(let i=0;i<24;i++){
+        const s = document.createElement("div");
+        s.textContent = "💖";
+        s.style.position="fixed";
+        s.style.left = (Math.random()*100)+"vw";
+        s.style.top  = "-10vh";
+        s.style.fontSize = (16 + Math.random()*22)+"px";
+        s.style.transition = "transform 1.4s ease, top 1.4s ease, opacity 1.4s ease";
+        document.body.appendChild(s);
+        requestAnimationFrame(()=>{
+          s.style.top = "110vh";
+          s.style.transform = `translateX(${(Math.random()*200-100)}px) rotate(${Math.random()*360}deg)`;
+          s.style.opacity = "0";
+        });
+        setTimeout(()=>s.remove(), 1500);
+      }
+    }
+  </script>
+</body>
+</html>
